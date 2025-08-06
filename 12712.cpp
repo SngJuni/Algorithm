@@ -4,6 +4,11 @@
 
 using namespace std;
 
+int plus_dx[4] = {0, 0, -1, 1};
+int plus_dy[4] = {-1, 1, 0, 0};
+int x_dx[4] = {1, 1, -1, -1};
+int x_dy[4] = {1, -1, 1, -1};
+
 int main (int argc, char** argv) {
 	int test_case;
 	int T;
@@ -23,20 +28,25 @@ int main (int argc, char** argv) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int sum_plus = arr[i][j];
-                int sum_x = arr[i][j];
-                for (int k = 1; k < m; k++) {
-                    if (i - k >= 0) sum_plus += arr[i - k][j];
-                    if (i + k < n)  sum_plus += arr[i + k][j];
-                    if (j - k >= 0) sum_plus += arr[i][j - k];
-                    if (j + k < n)  sum_plus += arr[i][j + k];
-
-                    if (i - k >= 0 && j - k >= 0) sum_x += arr[i - k][j - k];
-                    if (i + k < n  && j - k >= 0) sum_x += arr[i + k][j - k];
-                    if (i - k >= 0 && j + k < n)  sum_x += arr[i - k][j + k];
-                    if (i + k < n  && j + k < n)  sum_x += arr[i + k][j + k];
+                for (int k = 0; k < 4; k++) {
+                    for (int l = 1; l < m; l++) {
+                        int ni = i + plus_dx[k] * l;
+                        int nj = j + plus_dy[k] * l;
+                        if (ni >= 0 && ni < n && nj >= 0 && nj < n) sum_plus += arr[ni][nj];
+                    }
                 }
+
+                int sum_x = arr[i][j];
+                for (int k = 0; k < 4; k++) {
+                    for (int l = 1; l < m; l++) {
+                        int ni = i + x_dx[k] * l;
+                        int nj = j + x_dy[k] * l;
+                        if (ni >= 0 && ni < n && nj >= 0 && nj < n) sum_x += arr[ni][nj];
+                    }
+                }
+                
                 int max_sum = max(sum_plus, sum_x);
-                if (max_sum >= res) res = max_sum;
+                if (max_sum > res) res = max_sum;
             }
         }
         cout << "#" << test_case << " " << res << "\n";
